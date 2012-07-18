@@ -1,5 +1,4 @@
 name = Marquee Block
 package = Other
 description = Provides customizable scrolling marquee block
-version = 6.x-1.0-dev
-core = 6.x
+core = 7.x

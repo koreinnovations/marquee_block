@@ -1,77 +1,108 @@
 <?php
 
-function marquee_block_block($op = 'list', $delta = 0, $edit = array()) {
-  switch ($op) {
-    case 'list':
-      $blocks[0]['info'] = t('Scrolling Marquee');
-      return $blocks;
-    case 'view':
-      if ($delta == 0) {
-        $block['content'] = theme('marquee_block_scroller');
-      }
-      return $block;
-    case 'configure':
-      if ($delta == 0) {
-        $speed_options = array();
-        $speed_options['1'] = t('Very Slow');
-        $speed_options['2'] = t('Slow');
-        $speed_options['3'] = t('Medium');
-        $speed_options['4'] = t('Fast');
-        $speed_options['5'] = t('Very Fast');
+/**
+ * Implementation of hook_block_info().
+ */
+function marquee_block_block_info() {
+  $blocks = array();
 
-        $scroll_directions = array();
-        $scroll_directions['left'] = t('Left');
-        $scroll_directions['right'] = t('Right');
+  $blocks['marquee-block'] = array(
+      'info' => t('Scrolling Marquee'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+  );
 
-        $scroll_behaviors = array();
-        $scroll_behaviors['scroll'] = t('Scroll');
-        $scroll_behaviors['slide'] = t('Slide');
-        $scroll_behaviors['alternate'] = t('Alternate');
+  return $blocks;
+}
 
-        $form['marquee_block_message'] = array(
-            '#type' => 'textarea',
-            '#title' => t('Scrolling Message'),
-            '#description' => t('Enter your scrolling message here.  HTML tags are allowed.'),
-            '#default_value' => variable_get('marquee_block_message', ''),
-        );
+/**
+ * Implementation of hook_block_view().
+ */
+function marquee_block_block_view($delta = '') {
+  $block = array();
 
-        $form['marquee_block_scroll_speed'] = array(
-            '#type' => 'select',
-            '#title' => t('Scroll Speed'),
-            '#options' => $speed_options,
-            '#default_value' => variable_get('marquee_block_scroll_speed', 3),
-        );
+  if ($delta == 'marquee-block') {
+    $block['content'] = theme('marquee_block_scroller');
+  }
 
-        $form['marquee_block_scroll_direction'] = array(
-            '#type' => 'radios',
-            '#title' => t('Scroll Direction'),
-            '#options' => $scroll_directions,
-            '#default_value' => variable_get('marquee_block_scroll_direction', 'left'),
-        );
+  return $block;
+}
 
-        $form['marquee_block_scroll_behavior'] = array(
-            '#type' => 'radios',
-            '#title' => t('Scroll Behavior'),
-            '#options' => $scroll_behaviors,
-            '#default_value' => variable_get('marquee_block_scroll_behavior', 'scroll'),
-        );
-      }
-      return $form;
-    case 'save':
-      if ($delta == 0) {
-        variable_set('marquee_block_message', $edit['marquee_block_message']);
-        variable_set('marquee_block_scroll_speed', $edit['marquee_block_scroll_speed']);
-        variable_set('marquee_block_scroll_direction', $edit['marquee_block_scroll_direction']);
-        variable_set('marquee_block_scroll_behavior', $edit['marquee_block_scroll_behavior']);
-        drupal_set_message('Your marquee settings have been saved.');
-      }
-      break;
+/**
+ * Implementation of hook_block_configure().
+ */
+function marquee_block_block_configure($delta = '') {
+  $form = array();
+
+  if ($delta == 'marquee-block') {
+    $speed_options = array();
+    $speed_options['1'] = t('Very Slow');
+    $speed_options['2'] = t('Slow');
+    $speed_options['3'] = t('Medium');
+    $speed_options['4'] = t('Fast');
+    $speed_options['5'] = t('Very Fast');
+
+    $scroll_directions = array();
+    $scroll_directions['left'] = t('Left');
+    $scroll_directions['right'] = t('Right');
+
+    $scroll_behaviors = array();
+    $scroll_behaviors['scroll'] = t('Scroll');
+    $scroll_behaviors['slide'] = t('Slide');
+    $scroll_behaviors['alternate'] = t('Alternate');
+
+    $form['marquee_block_message'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Scrolling Message'),
+        '#description' => t('Enter your scrolling message here.  HTML tags are allowed.'),
+        '#default_value' => variable_get('marquee_block_message', ''),
+    );
+
+    $form['marquee_block_scroll_speed'] = array(
+        '#type' => 'select',
+        '#title' => t('Scroll Speed'),
+        '#options' => $speed_options,
+        '#default_value' => variable_get('marquee_block_scroll_speed', 3),
+    );
+
+    $form['marquee_block_scroll_direction'] = array(
+        '#type' => 'radios',
+        '#title' => t('Scroll Direction'),
+        '#options' => $scroll_directions,
+        '#default_value' => variable_get('marquee_block_scroll_direction', 'left'),
+    );
+
+    $form['marquee_block_scroll_behavior'] = array(
+        '#type' => 'radios',
+        '#title' => t('Scroll Behavior'),
+        '#options' => $scroll_behaviors,
+        '#default_value' => variable_get('marquee_block_scroll_behavior', 'scroll'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implementation of hook_block_save().
+ */
+function marquee_block_block_save($delta = '', $edit = array()) {
+  if ($delta == 'marquee-block') {
+    variable_set('marquee_block_message', $edit['marquee_block_message']);
+    variable_set('marquee_block_scroll_speed', $edit['marquee_block_scroll_speed']);
+    variable_set('marquee_block_scroll_direction', $edit['marquee_block_scroll_direction']);
+    variable_set('marquee_block_scroll_behavior', $edit['marquee_block_scroll_behavior']);
+    drupal_set_message('Your marquee settings have been saved.');
   }
 }
 
+/**
+ * Implementation of hook_theme().
+ */
 function marquee_block_theme() {
   $items = array();
-  $items['marquee_block_scroller'] = array('arguments' => array());
+
+  $items['marquee_block_scroller'] = array();
+
   return $items;
 }
 
