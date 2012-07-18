@@ -1,7 +1,7 @@
 <?php
 
 function marquee_block_block($op = 'list', $delta = 0, $edit = array()) {
-  switch($op) {
+  switch ($op) {
     case 'list':
       $blocks[0]['info'] = t('Scrolling Marquee');
       return $blocks;
@@ -29,31 +29,31 @@ function marquee_block_block($op = 'list', $delta = 0, $edit = array()) {
         $scroll_behaviors['alternate'] = t('Alternate');
 
         $form['marquee_block_message'] = array(
-          '#type' => 'textarea',
-          '#title' => t('Scrolling Message'),
-          '#description' => t('Enter your scrolling message here.  HTML tags are allowed.'),
-          '#default_value' => variable_get('marquee_block_message', ''),
+            '#type' => 'textarea',
+            '#title' => t('Scrolling Message'),
+            '#description' => t('Enter your scrolling message here.  HTML tags are allowed.'),
+            '#default_value' => variable_get('marquee_block_message', ''),
         );
 
         $form['marquee_block_scroll_speed'] = array(
-          '#type' => 'select',
-          '#title' => t('Scroll Speed'),
-          '#options' => $speed_options,
-          '#default_value' => variable_get('marquee_block_scroll_speed', 3),
+            '#type' => 'select',
+            '#title' => t('Scroll Speed'),
+            '#options' => $speed_options,
+            '#default_value' => variable_get('marquee_block_scroll_speed', 3),
         );
 
         $form['marquee_block_scroll_direction'] = array(
-          '#type' => 'radios',
-          '#title' => t('Scroll Direction'),
-          '#options' => $scroll_directions,
-          '#default_value' => variable_get('marquee_block_scroll_direction', 'left'),
+            '#type' => 'radios',
+            '#title' => t('Scroll Direction'),
+            '#options' => $scroll_directions,
+            '#default_value' => variable_get('marquee_block_scroll_direction', 'left'),
         );
 
         $form['marquee_block_scroll_behavior'] = array(
-          '#type' => 'radios',
-          '#title' => t('Scroll Behavior'),
-          '#options' => $scroll_behaviors,
-          '#default_value' => variable_get('marquee_block_scroll_behavior', 'scroll'),
+            '#type' => 'radios',
+            '#title' => t('Scroll Behavior'),
+            '#options' => $scroll_behaviors,
+            '#default_value' => variable_get('marquee_block_scroll_behavior', 'scroll'),
         );
       }
       return $form;
@@ -75,26 +75,28 @@ function marquee_block_theme() {
   return $items;
 }
 
-function theme_marquee_block_scroller()
-{
-  drupal_add_css(drupal_get_path('module', 'marquee_block') . '/marquee_block.css');
+function theme_marquee_block_scroller() {
+  $path = drupal_get_path('module', 'marquee_block');
+  drupal_add_css($path . '/marquee_block.css');
 
-  drupal_add_js(drupal_get_path('module', 'marquee_block') . '/jquery.marquee.js');
-  drupal_add_js(drupal_get_path('module', 'marquee_block') . '/marquee_block.js');
+  drupal_add_js($path . '/jquery.marquee.js');
+  drupal_add_js($path . '/marquee_block.js');
 
   $message = variable_get('marquee_block_message', '');
   $speed = variable_get('marquee_block_scroll_speed', 3);
   $direction = variable_get('marquee_block_scroll_direction', 'left');
   $behavior = variable_get('marquee_block_scroll_direction', 'scroll');
 
-  $output = '';
-  $output .= '<div id="marquee-scroller">';
-  $output .= '<div id="marquee-scroller-inner">';
-  $output .= sprintf('<marquee class="marquee-block" behavior="%s" scrollamount="%s" direction="%s">', $behavior, $speed, $direction);
-  $output .= '<span>' . $message . '</span>';
-  $output .= '</marquee>';
-  $output .= '</div>';
-  $output .= '</div>';
+  if (strlen(trim($message)) > 0) {
+    $output = '';
+    $output .= '<div id="marquee-scroller">';
+    $output .= '<div id="marquee-scroller-inner">';
+    $output .= sprintf('<marquee class="marquee-block" behavior="%s" scrollamount="%s" direction="%s">', $behavior, $speed, $direction);
+    $output .= '<span>' . $message . '</span>';
+    $output .= '</marquee>';
+    $output .= '</div>';
+    $output .= '</div>';
+  }
 
   return $output;
 }
